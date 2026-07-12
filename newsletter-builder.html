@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Scarves and Spikes — Newsletter Builder</title>
+<style>
+  :root {
+    --red: #A6192E;
+    --black: #111417;
+    --gold: #C6A15B;
+    --paper: #f6f6f4;
+    --line: #e2e2dd;
+    --ink: #1a1d21;
+    --muted: #6b6f76;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  header {
+    background: var(--black); color: #fff; padding: 18px 22px;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 4px solid var(--red);
+  }
+  header h1 { font-size: 18px; margin: 0; font-weight: 700; letter-spacing: .2px; }
+  header .tag { color: var(--gold); font-size: 12px; margin-left: auto; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 860px) { .wrap { grid-template-columns: 1fr; } }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+  .card h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 14px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 5px; }
+  input[type=text], select, textarea {
+    width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 7px;
+    font-size: 14px; font-family: inherit; background: #fff; color: var(--ink);
+  }
+  textarea { min-height: 110px; resize: vertical; }
+  .row { display: flex; gap: 12px; }
+  .row > div { flex: 1; }
+  button {
+    background: var(--red); color: #fff; border: 0; border-radius: 7px;
+    padding: 11px 16px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  button.secondary { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  button:hover { filter: brightness(1.05); }
+  .btnrow { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
+  .articles { max-height: 340px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+  .art { display: flex; gap: 9px; padding: 8px; border-radius: 6px; align-items: flex-start; }
+  .art:hover { background: #faf9f7; }
+  .art input { margin-top: 3px; }
+  .art .meta { font-size: 12px; color: var(--muted); }
+  .art .t { font-size: 13.5px; font-weight: 600; }
+  .status { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
+  .status.err { color: var(--red); }
+  .preview {
+    border: 1px solid var(--line); border-radius: 8px; padding: 20px; background: #fff;
+    font-size: 15px; line-height: 1.55;
+  }
+  .preview h3 { margin: 0 0 4px; }
+  .preview .subj { background: #faf7f2; border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; margin-bottom: 14px; font-size: 13px; }
+  .preview .subj b { color: var(--red); }
+  .preview ul { padding-left: 18px; }
+  .preview li { margin-bottom: 12px; }
+  .preview a { color: var(--red); }
+  .preview .exc { color: var(--muted); font-size: 13.5px; }
+  .preview .foot { color: var(--muted); font-size: 12.5px; margin-top: 18px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .copied { color: #1a7f37; font-weight: 700; font-size: 13px; align-self: center; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Scarves and Spikes · Newsletter Builder</h1>
+  <span class="tag">run it, add your take, copy, paste</span>
+</header>
+
+<div class="wrap">
+  <!-- LEFT: controls -->
+  <div class="card">
+    <h2>1. Set up today's edition</h2>
+    <div class="row">
+      <div>
+        <label>Edition date</label>
+        <input type="text" id="edDate" />
+      </div>
+      <div>
+        <label>Who's on duty</label>
+        <select id="author">
+          <option>Tyler</option><option>Tommy</option><option>Sydney</option>
+          <option>Henry</option><option>Grey</option><option>Jackson</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Edition type</label>
+        <select id="mode">
+          <option value="regular">Regular morning</option>
+          <option value="matchday">Matchday</option>
+        </select>
+      </div>
+      <div>
+        <label>Newsletter name</label>
+        <input type="text" id="nlName" value="Scarves and Spikes" />
+      </div>
+    </div>
+
+    <label>Your take / what to watch today <span class="hint">(the one part you write)</span></label>
+    <textarea id="take" placeholder="A few sentences in your voice: the storyline of the day, what to watch, a hot take, whatever. This is what makes the edition worth opening."></textarea>
+
+    <label style="margin-top:16px;">2. Pick the articles to feature</label>
+    <div class="hint">Auto-pulled from scarvesandspikes.com. Newest few are pre-checked.</div>
+    <div class="articles" id="articles"><p class="status" id="loadStatus">Loading your latest posts…</p></div>
+    <div class="btnrow">
+      <button class="secondary" id="refresh">Refresh articles</button>
+      <button id="generate">Generate newsletter ↓</button>
+    </div>
+    <p class="status" id="fetchNote"></p>
+  </div>
+
+  <!-- RIGHT: preview + copy -->
+  <div class="card">
+    <h2>3. Preview &amp; copy into WordPress</h2>
+    <div class="preview" id="preview"><p class="status">Fill in your take, pick articles, then hit “Generate newsletter.”</p></div>
+    <div class="btnrow">
+      <button id="copyHtml">Copy for WordPress</button>
+      <button class="secondary" id="copyText">Copy as plain text</button>
+      <span class="copied" id="copiedMsg" style="display:none;">Copied ✓</span>
+    </div>
+    <p class="hint">Paste into a new WordPress post, put it in your <b>Newsletter</b> category, add a featured image, then schedule it for the morning.</p>
+  </div>
+</div>
+
+<script>
+// ---- Config ----
+const SITE = "scarvesandspikes.com";
+const API = `https://public-api.wordpress.com/rest/v1.1/sites/${SITE}/posts/?number=12&fields=ID,title,URL,excerpt,date,categories`;
+const PATREON_LINE = "Scarves and Spikes is free and independent. If you want to support the work and get into the community Discord, join us on Patreon.";
+let POSTS = [];
+
+// ---- Helpers ----
+function stripTags(html){ const d = document.createElement("div"); d.innerHTML = html || ""; return (d.textContent || "").trim(); }
+function fmtToday(){
+  return new Date().toLocaleDateString("en-US", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
+}
+function shorten(t, n){ t = t.replace(/\s+/g," ").trim(); return t.length > n ? t.slice(0, n).replace(/\s+\S*$/,"") + "…" : t; }
+
+// ---- Fetch posts ----
+async function loadPosts(){
+  const box = document.getElementById("articles");
+  const note = document.getElementById("fetchNote");
+  box.innerHTML = '<p class="status" id="loadStatus">Loading your latest posts…</p>';
+  note.textContent = "";
+  try {
+    const res = await fetch(API);
+    if(!res.ok) throw new Error("API returned " + res.status);
+    const data = await res.json();
+    POSTS = (data.posts || []).map(p => ({
+      title: stripTags(p.title),
+      url: p.URL,
+      excerpt: shorten(stripTags(p.excerpt), 160),
+      date: new Date(p.date),
+      cats: Object.keys(p.categories || {})
+    }));
+    renderArticles();
+  } catch(err){
+    box.innerHTML = "";
+    note.className = "status err";
+    note.innerHTML = "Couldn't auto-pull articles here (this can happen in a preview window). Once this page is hosted or opened directly it will load automatically. You can also add articles by hand below.";
+    renderManual();
+  }
+}
+
+function renderArticles(){
+  const box = document.getElementById("articles");
+  if(!POSTS.length){ box.innerHTML = '<p class="status">No posts found.</p>'; return; }
+  box.innerHTML = "";
+  POSTS.forEach((p, i) => {
+    const row = document.createElement("label");
+    row.className = "art";
+    row.innerHTML = `<input type="checkbox" data-i="${i}" ${i < 4 ? "checked" : ""}/>
+      <span><span class="t">${p.title}</span><br>
+      <span class="meta">${p.cats.join(", ")} · ${p.date.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span></span>`;
+    box.appendChild(row);
+  });
+}
+
+function renderManual(){
+  const box = document.getElementById("articles");
+  const add = document.createElement("div");
+  add.innerHTML = `<div class="hint" style="margin-bottom:6px;">Add an article: title + URL</div>
+    <input type="text" id="mTitle" placeholder="Article title" style="margin-bottom:6px;"/>
+    <input type="text" id="mUrl" placeholder="https://scarvesandspikes.com/…" style="margin-bottom:6px;"/>
+    <button class="secondary" id="mAdd">Add article</button>`;
+  box.appendChild(add);
+  document.getElementById("mAdd").onclick = () => {
+    const t = document.getElementById("mTitle").value.trim();
+    const u = document.getElementById("mUrl").value.trim();
+    if(!t || !u) return;
+    POSTS.push({ title:t, url:u, excerpt:"", date:new Date(), cats:[] });
+    document.getElementById("articles").innerHTML = "";
+    renderArticles();
+    renderManual();
+  };
+}
+
+// ---- Build newsletter ----
+function selectedPosts(){
+  const checks = [...document.querySelectorAll('#articles input[type=checkbox]:checked')];
+  return checks.map(c => POSTS[+c.dataset.i]).filter(Boolean);
+}
+
+function buildHtml(){
+  const name = document.getElementById("nlName").value.trim() || "Scarves and Spikes";
+  const date = document.getElementById("edDate").value.trim();
+  const author = document.getElementById("author").value;
+  const mode = document.getElementById("mode").value;
+  const take = document.getElementById("take").value.trim();
+  const picks = selectedPosts();
+  const top = picks[0] ? picks[0].title : "Atlanta soccer today";
+
+  const subjects = [
+    `${name}: ${shorten(top, 55)}`,
+    `${date} — ${shorten(top, 50)}, plus the latest from Atlanta`,
+    (mode === "matchday" ? "⚽ Matchday: " : "Your Atlanta soccer morning: ") + shorten(top, 45)
+  ];
+
+  const intro = mode === "matchday"
+    ? `Good morning, it's matchday. Here's everything you need before kickoff, plus the latest from around Atlanta soccer.`
+    : `Good morning, and welcome to the ${name} newsletter. Here's what we're watching in Atlanta soccer and around the game today.`;
+
+  let list = picks.map(p =>
+    `<li><a href="${p.url}">${p.title}</a>${p.excerpt ? `<br><span class="exc">${p.excerpt}</span>` : ""}</li>`
+  ).join("\n");
+  if(!list) list = "<li>(Pick a few articles on the left.)</li>";
+
+  return {
+    subjects,
+    html: `
+      <p>${intro}</p>
+      ${take ? `<h3>Today's take</h3><p>${take.replace(/\n/g,"<br>")}</p>` : ""}
+      <h3>The latest from Scarves and Spikes</h3>
+      <ul>${list}</ul>
+      <p><em>${PATREON_LINE}</em></p>
+      <p class="foot">You're getting this because you subscribed at ${SITE}. Written today by ${author}.</p>
+    `
+  };
+}
+
+function render(){
+  const out = buildHtml();
+  const subjHtml = out.subjects.map((s,i)=>`<div><b>Option ${i+1}:</b> ${s}</div>`).join("");
+  document.getElementById("preview").innerHTML =
+    `<div class="subj"><b>SUBJECT LINE OPTIONS</b>${subjHtml}</div>` + out.html;
+}
+
+// ---- Copy ----
+async function copyRich(){
+  const out = buildHtml();
+  const html = out.html;
+  const plain = document.getElementById("preview").innerText;
+  try {
+    await navigator.clipboard.write([ new ClipboardItem({
+      "text/html": new Blob([html], {type:"text/html"}),
+      "text/plain": new Blob([plain], {type:"text/plain"})
+    })]);
+    flashCopied();
+  } catch(e){ fallbackCopy(html); }
+}
+function copyPlain(){
+  const plain = document.getElementById("preview").innerText;
+  navigator.clipboard.writeText(plain).then(flashCopied, ()=>fallbackCopy(plain));
+}
+function fallbackCopy(text){
+  const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta);
+  ta.select(); document.execCommand("copy"); ta.remove(); flashCopied();
+}
+function flashCopied(){
+  const m = document.getElementById("copiedMsg");
+  m.style.display = "inline"; setTimeout(()=> m.style.display="none", 1800);
+}
+
+// ---- Wire up ----
+document.getElementById("edDate").value = fmtToday();
+document.getElementById("generate").onclick = render;
+document.getElementById("refresh").onclick = loadPosts;
+document.getElementById("copyHtml").onclick = copyRich;
+document.getElementById("copyText").onclick = copyPlain;
+loadPosts();
+</script>
+</body>
+</html>
