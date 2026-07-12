@@ -5,290 +5,284 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Scarves and Spikes — Newsletter Builder</title>
 <style>
-  :root {
-    --red: #A6192E;
-    --black: #111417;
-    --gold: #C6A15B;
-    --paper: #f6f6f4;
-    --line: #e2e2dd;
-    --ink: #1a1d21;
-    --muted: #6b6f76;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--paper); color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
-  }
-  header {
-    background: var(--black); color: #fff; padding: 18px 22px;
-    display: flex; align-items: center; gap: 12px;
-    border-bottom: 4px solid var(--red);
-  }
-  header h1 { font-size: 18px; margin: 0; font-weight: 700; letter-spacing: .2px; }
-  header .tag { color: var(--gold); font-size: 12px; margin-left: auto; }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
-  @media (max-width: 860px) { .wrap { grid-template-columns: 1fr; } }
-  .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
-  .card h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 14px; }
-  label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 5px; }
-  input[type=text], select, textarea {
-    width: 100%; padding: 9px 11px; border: 1px solid var(--line); border-radius: 7px;
-    font-size: 14px; font-family: inherit; background: #fff; color: var(--ink);
-  }
-  textarea { min-height: 110px; resize: vertical; }
-  .row { display: flex; gap: 12px; }
-  .row > div { flex: 1; }
-  button {
-    background: var(--red); color: #fff; border: 0; border-radius: 7px;
-    padding: 11px 16px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit;
-  }
-  button.secondary { background: #fff; color: var(--ink); border: 1px solid var(--line); }
-  button:hover { filter: brightness(1.05); }
-  .btnrow { display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap; }
-  .articles { max-height: 340px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
-  .art { display: flex; gap: 9px; padding: 8px; border-radius: 6px; align-items: flex-start; }
-  .art:hover { background: #faf9f7; }
-  .art input { margin-top: 3px; }
-  .art .meta { font-size: 12px; color: var(--muted); }
-  .art .t { font-size: 13.5px; font-weight: 600; }
-  .status { font-size: 12.5px; color: var(--muted); margin: 8px 0 0; }
-  .status.err { color: var(--red); }
-  .preview {
-    border: 1px solid var(--line); border-radius: 8px; padding: 20px; background: #fff;
-    font-size: 15px; line-height: 1.55;
-  }
-  .preview h3 { margin: 0 0 4px; }
-  .preview .subj { background: #faf7f2; border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; margin-bottom: 14px; font-size: 13px; }
-  .preview .subj b { color: var(--red); }
-  .preview ul { padding-left: 18px; }
-  .preview li { margin-bottom: 12px; }
-  .preview a { color: var(--red); }
-  .preview .exc { color: var(--muted); font-size: 13.5px; }
-  .preview .foot { color: var(--muted); font-size: 12.5px; margin-top: 18px; border-top: 1px solid var(--line); padding-top: 12px; }
-  .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
-  .copied { color: #1a7f37; font-weight: 700; font-size: 13px; align-self: center; }
+  :root{ --red:#C8102E; --ink:#14171A; --gold:#C6A15B; --cream:#FBF9F5; --line:#e4e2dc; --muted:#6A7078; }
+  *{ box-sizing:border-box; }
+  body{ margin:0; background:#eceae4; color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; line-height:1.5; }
+  header{ background:var(--ink); color:#fff; padding:16px 22px; display:flex; align-items:center; gap:12px; border-bottom:3px solid var(--red); }
+  header h1{ font-size:17px; margin:0; font-weight:800; letter-spacing:.3px; font-family:Georgia,serif; }
+  header .tag{ color:var(--gold); font-size:11px; margin-left:auto; text-transform:uppercase; letter-spacing:.1em; }
+  .wrap{ max-width:1160px; margin:0 auto; padding:20px; display:grid; grid-template-columns:400px 1fr; gap:20px; align-items:start; }
+  @media (max-width:900px){ .wrap{ grid-template-columns:1fr; } }
+  .card{ background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .card h2{ font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; font-weight:700; margin:11px 0 4px; }
+  input[type=text],select,textarea{ width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:7px; font-size:14px; font-family:inherit; }
+  textarea{ min-height:96px; resize:vertical; }
+  .row{ display:flex; gap:10px; } .row>div{ flex:1; }
+  button{ background:var(--red); color:#fff; border:0; border-radius:7px; padding:10px 15px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
+  button.secondary{ background:#fff; color:var(--ink); border:1px solid var(--line); }
+  .btnrow{ display:flex; gap:9px; margin-top:12px; flex-wrap:wrap; align-items:center; }
+  .articles{ max-height:230px; overflow:auto; border:1px solid var(--line); border-radius:8px; padding:6px; }
+  .art{ display:flex; gap:8px; padding:7px; border-radius:6px; align-items:flex-start; } .art:hover{ background:#faf9f7; }
+  .art input{ margin-top:3px; } .art .t{ font-size:13px; font-weight:600; } .art .meta{ font-size:11.5px; color:var(--muted); }
+  .status{ font-size:12px; color:var(--muted); margin:7px 0 0; } .status.err{ color:var(--red); }
+  .note{ font-size:12px; color:var(--muted); margin-top:8px; background:#faf7f2; border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:6px; padding:9px 11px; }
+  .note b{ color:var(--ink); }
+  .previewWrap{ background:#eceae4; border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .copied{ color:#1a7f37; font-weight:700; font-size:13px; }
+  .hint{ font-size:11.5px; color:var(--muted); margin-top:4px; font-weight:400; }
 </style>
 </head>
 <body>
 <header>
   <h1>Scarves and Spikes · Newsletter Builder</h1>
-  <span class="tag">run it, add your take, copy, paste</span>
+  <span class="tag">pull · write your take · copy · paste</span>
 </header>
 
 <div class="wrap">
-  <!-- LEFT: controls -->
   <div class="card">
-    <h2>1. Set up today's edition</h2>
+    <h2>Build today's edition</h2>
     <div class="row">
-      <div>
-        <label>Edition date</label>
-        <input type="text" id="edDate" />
-      </div>
-      <div>
-        <label>Who's on duty</label>
-        <select id="author">
-          <option>Tyler</option><option>Tommy</option><option>Sydney</option>
-          <option>Henry</option><option>Grey</option><option>Jackson</option>
-        </select>
-      </div>
+      <div><label>Edition date</label><input type="text" id="edDate" /></div>
+      <div><label>On duty</label><select id="author">
+        <option>Tyler</option><option>Tommy</option><option>Sydney</option><option>Henry</option><option>Grey</option><option>Jackson</option>
+      </select></div>
     </div>
     <div class="row">
-      <div>
-        <label>Edition type</label>
-        <select id="mode">
-          <option value="regular">Regular morning</option>
-          <option value="matchday">Matchday</option>
-        </select>
-      </div>
-      <div>
-        <label>Newsletter name</label>
-        <input type="text" id="nlName" value="Scarves and Spikes" />
-      </div>
+      <div><label>Edition type</label><select id="mode"><option value="regular">Morning</option><option value="matchday">Matchday</option></select></div>
+      <div><label>Include today's matches</label><select id="incMatches"><option value="yes">Yes</option><option value="no">No</option></select></div>
     </div>
 
-    <label>Your take / what to watch today <span class="hint">(the one part you write)</span></label>
-    <textarea id="take" placeholder="A few sentences in your voice: the storyline of the day, what to watch, a hot take, whatever. This is what makes the edition worth opening."></textarea>
+    <label>Your take / what to watch <span class="hint">(the part you write, in your voice)</span></label>
+    <textarea id="take" placeholder="A few sentences: the storyline of the day, what to watch, a hot take. This is what makes it worth opening."></textarea>
 
-    <label style="margin-top:16px;">2. Pick the articles to feature</label>
-    <div class="hint">Auto-pulled from scarvesandspikes.com. Newest few are pre-checked.</div>
-    <div class="articles" id="articles"><p class="status" id="loadStatus">Loading your latest posts…</p></div>
+    <label>Feature these articles <span class="hint">(newest are pre-checked)</span></label>
+    <div class="articles" id="articles"><p class="status">Loading your latest posts…</p></div>
+
     <div class="btnrow">
-      <button class="secondary" id="refresh">Refresh articles</button>
-      <button id="generate">Generate newsletter ↓</button>
+      <button class="secondary" id="refresh">Refresh</button>
+      <button id="generate">Generate &darr;</button>
     </div>
-    <p class="status" id="fetchNote"></p>
+    <p class="status" id="matchStatus"></p>
+    <div class="note"><b>In WordPress:</b> add a <b>Custom HTML</b> block, paste. Then hit enter and type <b>/Patreon</b> to drop in your Patreon block. Put the post in your <b>Newsletter</b> category and schedule for the morning.</div>
   </div>
 
-  <!-- RIGHT: preview + copy -->
   <div class="card">
-    <h2>3. Preview &amp; copy into WordPress</h2>
-    <div class="preview" id="preview"><p class="status">Fill in your take, pick articles, then hit “Generate newsletter.”</p></div>
+    <h2>Preview &amp; copy</h2>
+    <div class="previewWrap"><div id="preview"><p class="status">Add your take, pick articles, hit Generate.</p></div></div>
     <div class="btnrow">
-      <button id="copyHtml">Copy for WordPress</button>
+      <button id="copyHtml">Copy newsletter HTML</button>
       <button class="secondary" id="copyText">Copy as plain text</button>
-      <span class="copied" id="copiedMsg" style="display:none;">Copied ✓</span>
+      <span class="copied" id="copiedMsg" style="display:none;">Copied &check;</span>
     </div>
-    <p class="hint">Paste into a new WordPress post, put it in your <b>Newsletter</b> category, add a featured image, then schedule it for the morning.</p>
   </div>
 </div>
 
 <script>
-// ---- Config ----
+// ============ CONFIG ============
 const SITE = "scarvesandspikes.com";
-const API = `https://public-api.wordpress.com/rest/v1.1/sites/${SITE}/posts/?number=12&fields=ID,title,URL,excerpt,date,categories`;
-const PATREON_LINE = "Scarves and Spikes is free and independent. If you want to support the work and get into the community Discord, join us on Patreon.";
-let POSTS = [];
+const POSTS_API = `https://public-api.wordpress.com/rest/v1.1/sites/${SITE}/posts/?number=12&fields=ID,title,URL,excerpt,date,categories,featured_image`;
+// Edit this list to add/remove leagues. slug = ESPN league slug.
+const LEAGUES = [
+  {slug:"fifa.world", name:"FIFA World Cup"},
+  {slug:"usa.1",      name:"MLS"},
+  {slug:"eng.1",      name:"Premier League"},
+  {slug:"esp.1",      name:"La Liga"},
+  {slug:"ita.1",      name:"Serie A"},
+  {slug:"ger.1",      name:"Bundesliga"},
+  {slug:"fra.1",      name:"Ligue 1"},
+  {slug:"mex.1",      name:"Liga MX"},
+  {slug:"uefa.champions", name:"Champions League"},
+  {slug:"uefa.europa",    name:"Europa League"}
+];
 
-// ---- Helpers ----
-function stripTags(html){ const d = document.createElement("div"); d.innerHTML = html || ""; return (d.textContent || "").trim(); }
-function fmtToday(){
-  return new Date().toLocaleDateString("en-US", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
-}
-function shorten(t, n){ t = t.replace(/\s+/g," ").trim(); return t.length > n ? t.slice(0, n).replace(/\s+\S*$/,"") + "…" : t; }
+const C = { red:"#C8102E", ink:"#14171A", gold:"#C6A15B", cream:"#FBF9F5", line:"#e4e2dc", muted:"#6A7078", card:"#ffffff" };
+let POSTS = [], MATCHES = [];
 
-// ---- Fetch posts ----
+// ============ HELPERS ============
+const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const stripTags = h => { const d=document.createElement("div"); d.innerHTML=h||""; return (d.textContent||"").trim(); };
+const shorten = (t,n)=>{ t=(t||"").replace(/\s+/g," ").trim(); return t.length>n ? t.slice(0,n).replace(/\s+\S*$/,"")+"\u2026" : t; };
+const todayET = ()=> new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
+const prettyDate = ()=> new Date().toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric",timeZone:"America/New_York"});
+const timeET = iso => new Date(iso).toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"}) + " ET";
+
+// ============ POSTS ============
 async function loadPosts(){
-  const box = document.getElementById("articles");
-  const note = document.getElementById("fetchNote");
-  box.innerHTML = '<p class="status" id="loadStatus">Loading your latest posts…</p>';
-  note.textContent = "";
-  try {
-    const res = await fetch(API);
-    if(!res.ok) throw new Error("API returned " + res.status);
-    const data = await res.json();
-    POSTS = (data.posts || []).map(p => ({
-      title: stripTags(p.title),
-      url: p.URL,
-      excerpt: shorten(stripTags(p.excerpt), 160),
-      date: new Date(p.date),
-      cats: Object.keys(p.categories || {})
-    }));
+  const box=document.getElementById("articles");
+  box.innerHTML='<p class="status">Loading your latest posts\u2026</p>';
+  try{
+    const r=await fetch(POSTS_API); if(!r.ok) throw 0;
+    const d=await r.json();
+    POSTS=(d.posts||[]).map(p=>({ title:stripTags(p.title), url:p.URL, img:p.featured_image||"",
+      excerpt:shorten(stripTags(p.excerpt),150), date:new Date(p.date), cats:Object.keys(p.categories||{}) }));
     renderArticles();
-  } catch(err){
-    box.innerHTML = "";
-    note.className = "status err";
-    note.innerHTML = "Couldn't auto-pull articles here (this can happen in a preview window). Once this page is hosted or opened directly it will load automatically. You can also add articles by hand below.";
-    renderManual();
+  }catch(e){
+    box.innerHTML="";
+    const add=document.createElement("div");
+    add.innerHTML=`<p class="status err">Couldn't auto-pull here (common in a preview window). Hosted, it loads on its own. Add one by hand:</p>
+      <input type="text" id="mTitle" placeholder="Title" style="margin:4px 0"/>
+      <input type="text" id="mUrl" placeholder="https://scarvesandspikes.com/\u2026" style="margin:4px 0"/>
+      <button class="secondary" id="mAdd">Add</button>`;
+    box.appendChild(add);
+    document.getElementById("mAdd").onclick=()=>{
+      const t=mTitle.value.trim(), u=mUrl.value.trim(); if(!t||!u)return;
+      POSTS.push({title:t,url:u,img:"",excerpt:"",date:new Date(),cats:[]}); box.innerHTML=""; renderArticles();
+    };
   }
 }
-
 function renderArticles(){
-  const box = document.getElementById("articles");
-  if(!POSTS.length){ box.innerHTML = '<p class="status">No posts found.</p>'; return; }
-  box.innerHTML = "";
-  POSTS.forEach((p, i) => {
-    const row = document.createElement("label");
-    row.className = "art";
-    row.innerHTML = `<input type="checkbox" data-i="${i}" ${i < 4 ? "checked" : ""}/>
-      <span><span class="t">${p.title}</span><br>
-      <span class="meta">${p.cats.join(", ")} · ${p.date.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span></span>`;
-    box.appendChild(row);
+  const box=document.getElementById("articles");
+  if(!POSTS.length){ box.innerHTML='<p class="status">No posts found.</p>'; return; }
+  box.innerHTML="";
+  POSTS.forEach((p,i)=>{
+    const l=document.createElement("label"); l.className="art";
+    l.innerHTML=`<input type="checkbox" data-i="${i}" ${i<4?"checked":""}/>
+      <span><span class="t">${esc(p.title)}</span><br><span class="meta">${esc(p.cats.join(", "))} \u00b7 ${p.date.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span></span>`;
+    box.appendChild(l);
   });
 }
 
-function renderManual(){
-  const box = document.getElementById("articles");
-  const add = document.createElement("div");
-  add.innerHTML = `<div class="hint" style="margin-bottom:6px;">Add an article: title + URL</div>
-    <input type="text" id="mTitle" placeholder="Article title" style="margin-bottom:6px;"/>
-    <input type="text" id="mUrl" placeholder="https://scarvesandspikes.com/…" style="margin-bottom:6px;"/>
-    <button class="secondary" id="mAdd">Add article</button>`;
-  box.appendChild(add);
-  document.getElementById("mAdd").onclick = () => {
-    const t = document.getElementById("mTitle").value.trim();
-    const u = document.getElementById("mUrl").value.trim();
-    if(!t || !u) return;
-    POSTS.push({ title:t, url:u, excerpt:"", date:new Date(), cats:[] });
-    document.getElementById("articles").innerHTML = "";
-    renderArticles();
-    renderManual();
-  };
+// ============ MATCHES (ESPN) ============
+async function loadMatches(){
+  const st=document.getElementById("matchStatus"); st.textContent="Checking today's fixtures\u2026";
+  const d=todayET().replaceAll("-","");
+  const results=await Promise.allSettled(LEAGUES.map(async lg=>{
+    const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg.slug}/scoreboard?dates=${d}`);
+    if(!r.ok) throw 0; const j=await r.json();
+    const evs=(j.events||[]).map(ev=>{
+      const c=ev.competitions&&ev.competitions[0]; const cs=(c&&c.competitors)||[];
+      const home=cs.find(x=>x.homeAway==="home")||cs[0]||{}; const away=cs.find(x=>x.homeAway==="away")||cs[1]||{};
+      const state=ev.status&&ev.status.type&&ev.status.type.state;
+      return {
+        home:(home.team&&(home.team.shortDisplayName||home.team.displayName))||"",
+        away:(away.team&&(away.team.shortDisplayName||away.team.displayName))||"",
+        hs:home.score, as:away.score, state,
+        detail:(ev.status&&ev.status.type&&ev.status.type.shortDetail)||"",
+        time:timeET(ev.date)
+      };
+    });
+    return {name:lg.name, events:evs};
+  }));
+  MATCHES=results.filter(r=>r.status==="fulfilled" && r.value.events.length).map(r=>r.value);
+  st.textContent = MATCHES.length ? `Found matches in ${MATCHES.length} league(s) today.` : "No matches in your league list today (matches section will stay blank).";
 }
 
-// ---- Build newsletter ----
-function selectedPosts(){
-  const checks = [...document.querySelectorAll('#articles input[type=checkbox]:checked')];
-  return checks.map(c => POSTS[+c.dataset.i]).filter(Boolean);
+// ============ BUILD NEWSLETTER (email-safe) ============
+function selectedPosts(){ return [...document.querySelectorAll('#articles input:checked')].map(c=>POSTS[+c.dataset.i]).filter(Boolean); }
+
+function eyebrow(text){
+  return `<tr><td style="padding:26px 28px 0;"><span style="font-family:Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:.14em;text-transform:uppercase;color:${C.red};">${esc(text)}</span>
+    <div style="height:2px;width:34px;background:${C.gold};margin-top:7px;"></div></td></tr>`;
+}
+function matchesBlock(){
+  if(!MATCHES.length) return "";
+  let rows="";
+  MATCHES.forEach(lg=>{
+    rows+=`<div style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:${C.ink};margin:14px 0 4px;text-transform:uppercase;letter-spacing:.05em;">${esc(lg.name)}</div>`;
+    lg.events.forEach(m=>{
+      let left, right;
+      if(m.state==="pre"){ left=`${esc(m.home)} <span style="color:${C.muted}">v</span> ${esc(m.away)}`; right=esc(m.time); }
+      else if(m.hs!=null && m.as!=null){ left=`${esc(m.home)} <b>${esc(String(m.hs))}\u2013${esc(String(m.as))}</b> ${esc(m.away)}`; right=esc(m.detail); }
+      else { left=`${esc(m.home)} <span style="color:${C.muted}">v</span> ${esc(m.away)}`; right=esc(m.detail); }
+      rows+=`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-bottom:1px solid ${C.line};"><tr>
+        <td style="font-family:Arial,sans-serif;font-size:14px;color:${C.ink};padding:7px 0;">${left}</td>
+        <td align="right" style="font-family:Arial,sans-serif;font-size:13px;color:${C.muted};padding:7px 0;white-space:nowrap;">${right}</td>
+      </tr></table>`;
+    });
+  });
+  return eyebrow("Today's matches") + `<tr><td style="padding:6px 28px 4px;">${rows}</td></tr>`;
 }
 
 function buildHtml(){
-  const name = document.getElementById("nlName").value.trim() || "Scarves and Spikes";
-  const date = document.getElementById("edDate").value.trim();
-  const author = document.getElementById("author").value;
-  const mode = document.getElementById("mode").value;
-  const take = document.getElementById("take").value.trim();
-  const picks = selectedPosts();
-  const top = picks[0] ? picks[0].title : "Atlanta soccer today";
+  const mode=document.getElementById("mode").value;
+  const take=document.getElementById("take").value.trim();
+  const author=document.getElementById("author").value;
+  const incM=document.getElementById("incMatches").value==="yes";
+  const picks=selectedPosts();
+  const lead=picks[0], rest=picks.slice(1);
+  const editionTag = mode==="matchday" ? "Matchday Edition" : "Morning Edition";
+  const dateStr = prettyDate();
 
-  const subjects = [
-    `${name}: ${shorten(top, 55)}`,
-    `${date} — ${shorten(top, 50)}, plus the latest from Atlanta`,
-    (mode === "matchday" ? "⚽ Matchday: " : "Your Atlanta soccer morning: ") + shorten(top, 45)
-  ];
+  let html = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.cream};margin:0;padding:0;">
+  <tr><td align="center" style="padding:0;">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:${C.card};border:1px solid ${C.line};">
+    <tr><td style="background:${C.ink};padding:22px 28px;">
+      <div style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:bold;color:#ffffff;letter-spacing:.5px;">Scarves <span style="color:${C.red};">&amp;</span> Spikes</div>
+      <div style="height:2px;background:${C.gold};margin:9px 0;width:80px;"></div>
+      <div style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#cfcfcf;">${esc(editionTag)} &nbsp;\u00b7&nbsp; ${esc(dateStr)}</div>
+    </td></tr>`;
 
-  const intro = mode === "matchday"
-    ? `Good morning, it's matchday. Here's everything you need before kickoff, plus the latest from around Atlanta soccer.`
-    : `Good morning, and welcome to the ${name} newsletter. Here's what we're watching in Atlanta soccer and around the game today.`;
+  if(take){
+    html += `<tr><td style="padding:24px 28px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.cream};border-left:3px solid ${C.red};border-radius:4px;">
+        <tr><td style="padding:14px 16px;">
+          <div style="font-family:Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:.14em;text-transform:uppercase;color:${C.red};margin-bottom:6px;">The Take</div>
+          <div style="font-family:Georgia,serif;font-size:16px;line-height:1.55;color:${C.ink};">${esc(take).replace(/\n/g,"<br>")}</div>
+        </td></tr>
+      </table></td></tr>`;
+  }
 
-  let list = picks.map(p =>
-    `<li><a href="${p.url}">${p.title}</a>${p.excerpt ? `<br><span class="exc">${p.excerpt}</span>` : ""}</li>`
-  ).join("\n");
-  if(!list) list = "<li>(Pick a few articles on the left.)</li>";
+  if(lead){
+    html += eyebrow("Top story");
+    html += `<tr><td style="padding:10px 28px 0;">`;
+    if(lead.img) html += `<a href="${esc(lead.url)}"><img src="${esc(lead.img)}" width="544" alt="" style="width:100%;max-width:544px;height:auto;border-radius:6px;display:block;border:0;margin-bottom:12px;"/></a>`;
+    html += `<a href="${esc(lead.url)}" style="text-decoration:none;"><div style="font-family:Georgia,serif;font-size:22px;line-height:1.3;font-weight:bold;color:${C.ink};">${esc(lead.title)}</div></a>`;
+    if(lead.excerpt) html += `<div style="font-family:Arial,sans-serif;font-size:14.5px;line-height:1.55;color:${C.muted};margin-top:7px;">${esc(lead.excerpt)}</div>`;
+    html += `<a href="${esc(lead.url)}" style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;color:${C.red};text-decoration:none;display:inline-block;margin-top:9px;">Read the full story &rarr;</a>`;
+    html += `</td></tr>`;
+  }
 
-  return {
-    subjects,
-    html: `
-      <p>${intro}</p>
-      ${take ? `<h3>Today's take</h3><p>${take.replace(/\n/g,"<br>")}</p>` : ""}
-      <h3>The latest from Scarves and Spikes</h3>
-      <ul>${list}</ul>
-      <p><em>${PATREON_LINE}</em></p>
-      <p class="foot">You're getting this because you subscribed at ${SITE}. Written today by ${author}.</p>
-    `
-  };
+  if(rest.length){
+    html += eyebrow("Also today");
+    html += `<tr><td style="padding:8px 28px 0;">`;
+    rest.forEach(p=>{
+      html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:10px 0;"><tr>`;
+      if(p.img) html += `<td width="104" valign="top" style="padding-right:12px;"><a href="${esc(p.url)}"><img src="${esc(p.img)}" width="96" alt="" style="width:96px;height:auto;border-radius:5px;display:block;border:0;"/></a></td>`;
+      html += `<td valign="top">
+        <a href="${esc(p.url)}" style="text-decoration:none;"><div style="font-family:Georgia,serif;font-size:15.5px;line-height:1.35;font-weight:bold;color:${C.ink};">${esc(p.title)}</div></a>
+        ${p.excerpt?`<div style="font-family:Arial,sans-serif;font-size:13px;line-height:1.5;color:${C.muted};margin-top:3px;">${esc(shorten(p.excerpt,90))}</div>`:""}
+      </td></tr></table>`;
+    });
+    html += `</td></tr>`;
+  }
+
+  if(incM) html += matchesBlock();
+
+  html += `<tr><td style="padding:26px 28px 24px;">
+      <div style="height:1px;background:${C.line};margin-bottom:16px;"></div>
+      <div style="font-family:Arial,sans-serif;font-size:12.5px;line-height:1.6;color:${C.muted};">
+        That's your rundown for today. Written by ${esc(author)} for Scarves &amp; Spikes \u2014 independent Atlanta soccer coverage.
+      </div>
+    </td></tr>
+  </table>
+  </td></tr></table>`;
+
+  return html;
 }
 
-function render(){
-  const out = buildHtml();
-  const subjHtml = out.subjects.map((s,i)=>`<div><b>Option ${i+1}:</b> ${s}</div>`).join("");
-  document.getElementById("preview").innerHTML =
-    `<div class="subj"><b>SUBJECT LINE OPTIONS</b>${subjHtml}</div>` + out.html;
-}
+function render(){ document.getElementById("preview").innerHTML = buildHtml(); }
 
-// ---- Copy ----
-async function copyRich(){
-  const out = buildHtml();
-  const html = out.html;
-  const plain = document.getElementById("preview").innerText;
-  try {
-    await navigator.clipboard.write([ new ClipboardItem({
-      "text/html": new Blob([html], {type:"text/html"}),
-      "text/plain": new Blob([plain], {type:"text/plain"})
-    })]);
-    flashCopied();
-  } catch(e){ fallbackCopy(html); }
+// ============ COPY ============
+function flash(){ const m=document.getElementById("copiedMsg"); m.style.display="inline"; setTimeout(()=>m.style.display="none",1800); }
+function copyHtmlSource(){
+  const html=buildHtml();
+  navigator.clipboard.writeText(html).then(flash,()=>{ const ta=document.createElement("textarea"); ta.value=html; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); flash(); });
 }
 function copyPlain(){
-  const plain = document.getElementById("preview").innerText;
-  navigator.clipboard.writeText(plain).then(flashCopied, ()=>fallbackCopy(plain));
-}
-function fallbackCopy(text){
-  const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta);
-  ta.select(); document.execCommand("copy"); ta.remove(); flashCopied();
-}
-function flashCopied(){
-  const m = document.getElementById("copiedMsg");
-  m.style.display = "inline"; setTimeout(()=> m.style.display="none", 1800);
+  const t=document.getElementById("preview").innerText;
+  navigator.clipboard.writeText(t).then(flash,()=>{});
 }
 
-// ---- Wire up ----
-document.getElementById("edDate").value = fmtToday();
+// ============ INIT ============
+document.getElementById("edDate").value = prettyDate();
 document.getElementById("generate").onclick = render;
-document.getElementById("refresh").onclick = loadPosts;
-document.getElementById("copyHtml").onclick = copyRich;
+document.getElementById("refresh").onclick = ()=>{ loadPosts(); loadMatches(); };
+document.getElementById("copyHtml").onclick = copyHtmlSource;
 document.getElementById("copyText").onclick = copyPlain;
 loadPosts();
+loadMatches();
 </script>
 </body>
 </html>
