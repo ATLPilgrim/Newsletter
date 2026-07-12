@@ -29,9 +29,22 @@
   .status{ font-size:12px; color:var(--muted); margin:7px 0 0; } .status.err{ color:var(--red); }
   .note{ font-size:12px; color:var(--muted); margin-top:8px; background:#faf7f2; border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:6px; padding:9px 11px; }
   .note b{ color:var(--ink); }
-  .previewWrap{ background:#eceae4; border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .previewWrap{ background:#eceae4; border:1px solid var(--line); border-radius:10px; padding:14px; }
   .copied{ color:#1a7f37; font-weight:700; font-size:13px; }
   .hint{ font-size:11.5px; color:var(--muted); margin-top:4px; font-weight:400; }
+  /* Preview approximates how Jetpack will render the blocks */
+  #preview{ background:#fff; padding:22px; border-radius:6px; font-family:Georgia,serif; color:#1a1d21; font-size:15px; line-height:1.6; }
+  #preview h2{ font-family:Arial,sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(--red); margin:22px 0 8px; }
+  #preview h2:first-child{ margin-top:0; }
+  #preview h3{ font-size:19px; margin:6px 0; line-height:1.3; }
+  #preview a{ color:var(--ink); text-decoration:none; }
+  #preview p a strong{ color:var(--red); }
+  #preview blockquote{ border-left:3px solid var(--red); margin:0; padding:8px 14px; background:#faf7f2; font-style:normal; }
+  #preview img{ max-width:100%; height:auto; border-radius:6px; display:block; margin:6px 0; }
+  #preview figure{ margin:0; }
+  #preview hr{ border:0; border-top:1px solid var(--line); margin:18px 0; }
+  #preview ul{ padding-left:18px; margin:6px 0; } #preview li{ margin:3px 0; font-family:Arial,sans-serif; font-size:14px; }
+  #preview p{ margin:8px 0; }
 </style>
 </head>
 <body>
@@ -58,24 +71,24 @@
     <textarea id="take" placeholder="A few sentences: the storyline of the day, what to watch, a hot take. This is what makes it worth opening."></textarea>
 
     <label>Feature these articles <span class="hint">(newest are pre-checked)</span></label>
-    <div class="articles" id="articles"><p class="status">Loading your latest posts…</p></div>
+    <div class="articles" id="articles"><p class="status">Loading your latest posts...</p></div>
 
     <div class="btnrow">
       <button class="secondary" id="refresh">Refresh</button>
       <button id="generate">Generate &darr;</button>
     </div>
     <p class="status" id="matchStatus"></p>
-    <div class="note"><b>In WordPress:</b> add a <b>Custom HTML</b> block, paste. Then hit enter and type <b>/Patreon</b> to drop in your Patreon block. Put the post in your <b>Newsletter</b> category and schedule for the morning.</div>
+    <div class="note"><b>In WordPress:</b> click into the post body and <b>paste</b> (it becomes blocks automatically). Then hit enter and type <b>/Patreon</b> for your Patreon block. Set the post to your <b>Newsletter</b> category and schedule it. Paste into the normal editor, <b>not</b> a Custom HTML block.</div>
   </div>
 
   <div class="card">
     <h2>Preview &amp; copy</h2>
     <div class="previewWrap"><div id="preview"><p class="status">Add your take, pick articles, hit Generate.</p></div></div>
     <div class="btnrow">
-      <button id="copyHtml">Copy newsletter HTML</button>
-      <button class="secondary" id="copyText">Copy as plain text</button>
+      <button id="copyBtn">Copy for WordPress</button>
       <span class="copied" id="copiedMsg" style="display:none;">Copied &check;</span>
     </div>
+    <p class="hint">This is close to how Jetpack will render it. Jetpack adds your site header at the top and applies its own clean styling.</p>
   </div>
 </div>
 
@@ -96,14 +109,12 @@ const LEAGUES = [
   {slug:"uefa.champions", name:"Champions League"},
   {slug:"uefa.europa",    name:"Europa League"}
 ];
-
-const C = { red:"#C8102E", ink:"#14171A", gold:"#C6A15B", cream:"#FBF9F5", line:"#e4e2dc", muted:"#6A7078", card:"#ffffff" };
 let POSTS = [], MATCHES = [];
 
 // ============ HELPERS ============
 const esc = s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const stripTags = h => { const d=document.createElement("div"); d.innerHTML=h||""; return (d.textContent||"").trim(); };
-const shorten = (t,n)=>{ t=(t||"").replace(/\s+/g," ").trim(); return t.length>n ? t.slice(0,n).replace(/\s+\S*$/,"")+"\u2026" : t; };
+const shorten = (t,n)=>{ t=(t||"").replace(/\s+/g," ").trim(); return t.length>n ? t.slice(0,n).replace(/\s+\S*$/,"")+"..." : t; };
 const todayET = ()=> new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const prettyDate = ()=> new Date().toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric",timeZone:"America/New_York"});
 const timeET = iso => new Date(iso).toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"}) + " ET";
@@ -111,7 +122,7 @@ const timeET = iso => new Date(iso).toLocaleTimeString("en-US",{timeZone:"Americ
 // ============ POSTS ============
 async function loadPosts(){
   const box=document.getElementById("articles");
-  box.innerHTML='<p class="status">Loading your latest posts\u2026</p>';
+  box.innerHTML='<p class="status">Loading your latest posts...</p>';
   try{
     const r=await fetch(POSTS_API); if(!r.ok) throw 0;
     const d=await r.json();
@@ -121,10 +132,10 @@ async function loadPosts(){
   }catch(e){
     box.innerHTML="";
     const add=document.createElement("div");
-    add.innerHTML=`<p class="status err">Couldn't auto-pull here (common in a preview window). Hosted, it loads on its own. Add one by hand:</p>
-      <input type="text" id="mTitle" placeholder="Title" style="margin:4px 0"/>
-      <input type="text" id="mUrl" placeholder="https://scarvesandspikes.com/\u2026" style="margin:4px 0"/>
-      <button class="secondary" id="mAdd">Add</button>`;
+    add.innerHTML='<p class="status err">Couldn\'t auto-pull here (common in a preview window). Hosted, it loads on its own. Add one by hand:</p>'+
+      '<input type="text" id="mTitle" placeholder="Title" style="margin:4px 0"/>'+
+      '<input type="text" id="mUrl" placeholder="https://scarvesandspikes.com/..." style="margin:4px 0"/>'+
+      '<button class="secondary" id="mAdd">Add</button>';
     box.appendChild(add);
     document.getElementById("mAdd").onclick=()=>{
       const t=mTitle.value.trim(), u=mUrl.value.trim(); if(!t||!u)return;
@@ -138,15 +149,15 @@ function renderArticles(){
   box.innerHTML="";
   POSTS.forEach((p,i)=>{
     const l=document.createElement("label"); l.className="art";
-    l.innerHTML=`<input type="checkbox" data-i="${i}" ${i<4?"checked":""}/>
-      <span><span class="t">${esc(p.title)}</span><br><span class="meta">${esc(p.cats.join(", "))} \u00b7 ${p.date.toLocaleDateString("en-US",{month:"short",day:"numeric"})}</span></span>`;
+    l.innerHTML='<input type="checkbox" data-i="'+i+'" '+(i<4?"checked":"")+'/>'+
+      '<span><span class="t">'+esc(p.title)+'</span><br><span class="meta">'+esc(p.cats.join(", "))+' &middot; '+p.date.toLocaleDateString("en-US",{month:"short",day:"numeric"})+'</span></span>';
     box.appendChild(l);
   });
 }
 
 // ============ MATCHES (ESPN) ============
 async function loadMatches(){
-  const st=document.getElementById("matchStatus"); st.textContent="Checking today's fixtures\u2026";
+  const st=document.getElementById("matchStatus"); st.textContent="Checking today's fixtures...";
   const d=todayET().replaceAll("-","");
   const results=await Promise.allSettled(LEAGUES.map(async lg=>{
     const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${lg.slug}/scoreboard?dates=${d}`);
@@ -166,121 +177,82 @@ async function loadMatches(){
     return {name:lg.name, events:evs};
   }));
   MATCHES=results.filter(r=>r.status==="fulfilled" && r.value.events.length).map(r=>r.value);
-  st.textContent = MATCHES.length ? `Found matches in ${MATCHES.length} league(s) today.` : "No matches in your league list today (matches section will stay blank).";
+  st.textContent = MATCHES.length ? ("Found matches in "+MATCHES.length+" league(s) today.") : "No matches in your league list today (section stays blank).";
 }
 
-// ============ BUILD NEWSLETTER (email-safe) ============
+// ============ BUILD NEWSLETTER (native-block HTML, no em dashes) ============
 function selectedPosts(){ return [...document.querySelectorAll('#articles input:checked')].map(c=>POSTS[+c.dataset.i]).filter(Boolean); }
 
-function eyebrow(text){
-  return `<tr><td style="padding:26px 28px 0;"><span style="font-family:Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:.14em;text-transform:uppercase;color:${C.red};">${esc(text)}</span>
-    <div style="height:2px;width:34px;background:${C.gold};margin-top:7px;"></div></td></tr>`;
-}
-function matchesBlock(){
-  if(!MATCHES.length) return "";
-  let rows="";
-  MATCHES.forEach(lg=>{
-    rows+=`<div style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:${C.ink};margin:14px 0 4px;text-transform:uppercase;letter-spacing:.05em;">${esc(lg.name)}</div>`;
-    lg.events.forEach(m=>{
-      let left, right;
-      if(m.state==="pre"){ left=`${esc(m.home)} <span style="color:${C.muted}">v</span> ${esc(m.away)}`; right=esc(m.time); }
-      else if(m.hs!=null && m.as!=null){ left=`${esc(m.home)} <b>${esc(String(m.hs))}\u2013${esc(String(m.as))}</b> ${esc(m.away)}`; right=esc(m.detail); }
-      else { left=`${esc(m.home)} <span style="color:${C.muted}">v</span> ${esc(m.away)}`; right=esc(m.detail); }
-      rows+=`<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-bottom:1px solid ${C.line};"><tr>
-        <td style="font-family:Arial,sans-serif;font-size:14px;color:${C.ink};padding:7px 0;">${left}</td>
-        <td align="right" style="font-family:Arial,sans-serif;font-size:13px;color:${C.muted};padding:7px 0;white-space:nowrap;">${right}</td>
-      </tr></table>`;
-    });
-  });
-  return eyebrow("Today's matches") + `<tr><td style="padding:6px 28px 4px;">${rows}</td></tr>`;
-}
-
-function buildHtml(){
-  const mode=document.getElementById("mode").value;
+function buildBlocksHtml(){
   const take=document.getElementById("take").value.trim();
   const author=document.getElementById("author").value;
   const incM=document.getElementById("incMatches").value==="yes";
   const picks=selectedPosts();
   const lead=picks[0], rest=picks.slice(1);
-  const editionTag = mode==="matchday" ? "Matchday Edition" : "Morning Edition";
-  const dateStr = prettyDate();
-
-  let html = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.cream};margin:0;padding:0;">
-  <tr><td align="center" style="padding:0;">
-  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:${C.card};border:1px solid ${C.line};">
-    <tr><td style="background:${C.ink};padding:22px 28px;">
-      <div style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:bold;color:#ffffff;letter-spacing:.5px;">Scarves <span style="color:${C.red};">&amp;</span> Spikes</div>
-      <div style="height:2px;background:${C.gold};margin:9px 0;width:80px;"></div>
-      <div style="font-family:Arial,sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#cfcfcf;">${esc(editionTag)} &nbsp;\u00b7&nbsp; ${esc(dateStr)}</div>
-    </td></tr>`;
+  let h="";
 
   if(take){
-    html += `<tr><td style="padding:24px 28px 0;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${C.cream};border-left:3px solid ${C.red};border-radius:4px;">
-        <tr><td style="padding:14px 16px;">
-          <div style="font-family:Arial,sans-serif;font-size:11px;font-weight:bold;letter-spacing:.14em;text-transform:uppercase;color:${C.red};margin-bottom:6px;">The Take</div>
-          <div style="font-family:Georgia,serif;font-size:16px;line-height:1.55;color:${C.ink};">${esc(take).replace(/\n/g,"<br>")}</div>
-        </td></tr>
-      </table></td></tr>`;
+    h += "<h2>The Take</h2>\n<blockquote><p>"+esc(take).replace(/\n/g,"<br>")+"</p></blockquote>\n<hr>\n";
   }
-
   if(lead){
-    html += eyebrow("Top story");
-    html += `<tr><td style="padding:10px 28px 0;">`;
-    if(lead.img) html += `<a href="${esc(lead.url)}"><img src="${esc(lead.img)}" width="544" alt="" style="width:100%;max-width:544px;height:auto;border-radius:6px;display:block;border:0;margin-bottom:12px;"/></a>`;
-    html += `<a href="${esc(lead.url)}" style="text-decoration:none;"><div style="font-family:Georgia,serif;font-size:22px;line-height:1.3;font-weight:bold;color:${C.ink};">${esc(lead.title)}</div></a>`;
-    if(lead.excerpt) html += `<div style="font-family:Arial,sans-serif;font-size:14.5px;line-height:1.55;color:${C.muted};margin-top:7px;">${esc(lead.excerpt)}</div>`;
-    html += `<a href="${esc(lead.url)}" style="font-family:Arial,sans-serif;font-size:13px;font-weight:bold;color:${C.red};text-decoration:none;display:inline-block;margin-top:9px;">Read the full story &rarr;</a>`;
-    html += `</td></tr>`;
+    h += "<h2>Top story</h2>\n";
+    if(lead.img) h += '<figure><img src="'+esc(lead.img)+'" alt=""></figure>\n';
+    h += '<h3><a href="'+esc(lead.url)+'">'+esc(lead.title)+"</a></h3>\n";
+    if(lead.excerpt) h += "<p>"+esc(lead.excerpt)+"</p>\n";
+    h += '<p><a href="'+esc(lead.url)+'"><strong>Read the full story &rarr;</strong></a></p>\n<hr>\n';
   }
-
   if(rest.length){
-    html += eyebrow("Also today");
-    html += `<tr><td style="padding:8px 28px 0;">`;
+    h += "<h2>Also today</h2>\n";
     rest.forEach(p=>{
-      html += `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:10px 0;"><tr>`;
-      if(p.img) html += `<td width="104" valign="top" style="padding-right:12px;"><a href="${esc(p.url)}"><img src="${esc(p.img)}" width="96" alt="" style="width:96px;height:auto;border-radius:5px;display:block;border:0;"/></a></td>`;
-      html += `<td valign="top">
-        <a href="${esc(p.url)}" style="text-decoration:none;"><div style="font-family:Georgia,serif;font-size:15.5px;line-height:1.35;font-weight:bold;color:${C.ink};">${esc(p.title)}</div></a>
-        ${p.excerpt?`<div style="font-family:Arial,sans-serif;font-size:13px;line-height:1.5;color:${C.muted};margin-top:3px;">${esc(shorten(p.excerpt,90))}</div>`:""}
-      </td></tr></table>`;
+      h += '<p><a href="'+esc(p.url)+'"><strong>'+esc(p.title)+"</strong></a>";
+      if(p.excerpt) h += "<br>"+esc(shorten(p.excerpt,110));
+      h += "</p>\n";
     });
-    html += `</td></tr>`;
+    h += "<hr>\n";
   }
-
-  if(incM) html += matchesBlock();
-
-  html += `<tr><td style="padding:26px 28px 24px;">
-      <div style="height:1px;background:${C.line};margin-bottom:16px;"></div>
-      <div style="font-family:Arial,sans-serif;font-size:12.5px;line-height:1.6;color:${C.muted};">
-        That's your rundown for today. Written by ${esc(author)} for Scarves &amp; Spikes \u2014 independent Atlanta soccer coverage.
-      </div>
-    </td></tr>
-  </table>
-  </td></tr></table>`;
-
-  return html;
+  if(incM && MATCHES.length){
+    h += "<h2>Today's matches</h2>\n";
+    MATCHES.forEach(lg=>{
+      h += "<p><strong>"+esc(lg.name)+"</strong></p>\n<ul>\n";
+      lg.events.forEach(m=>{
+        let line;
+        if(m.state==="pre") line = esc(m.home)+" v "+esc(m.away)+", "+esc(m.time);
+        else if(m.hs!=null && m.as!=null) line = esc(m.home)+" "+esc(String(m.hs))+"-"+esc(String(m.as))+" "+esc(m.away)+" ("+esc(m.detail)+")";
+        else line = esc(m.home)+" v "+esc(m.away)+" ("+esc(m.detail)+")";
+        h += "<li>"+line+"</li>\n";
+      });
+      h += "</ul>\n";
+    });
+    h += "<hr>\n";
+  }
+  h += "<p>That's your rundown for today. Written by "+esc(author)+" for Scarves and Spikes, independent Atlanta soccer coverage.</p>\n";
+  return h;
 }
 
-function render(){ document.getElementById("preview").innerHTML = buildHtml(); }
+function render(){ document.getElementById("preview").innerHTML = buildBlocksHtml(); }
 
-// ============ COPY ============
+// ============ COPY (rich, so it pastes as blocks) ============
 function flash(){ const m=document.getElementById("copiedMsg"); m.style.display="inline"; setTimeout(()=>m.style.display="none",1800); }
-function copyHtmlSource(){
-  const html=buildHtml();
-  navigator.clipboard.writeText(html).then(flash,()=>{ const ta=document.createElement("textarea"); ta.value=html; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); flash(); });
-}
-function copyPlain(){
-  const t=document.getElementById("preview").innerText;
-  navigator.clipboard.writeText(t).then(flash,()=>{});
+async function copyForWP(){
+  const html=buildBlocksHtml();
+  const plain=document.getElementById("preview").innerText;
+  try{
+    await navigator.clipboard.write([ new ClipboardItem({
+      "text/html": new Blob([html],{type:"text/html"}),
+      "text/plain": new Blob([plain],{type:"text/plain"})
+    })]);
+    flash();
+  }catch(e){
+    try{ await navigator.clipboard.writeText(html); flash(); }
+    catch(e2){ const ta=document.createElement("textarea"); ta.value=html; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); flash(); }
+  }
 }
 
 // ============ INIT ============
 document.getElementById("edDate").value = prettyDate();
 document.getElementById("generate").onclick = render;
 document.getElementById("refresh").onclick = ()=>{ loadPosts(); loadMatches(); };
-document.getElementById("copyHtml").onclick = copyHtmlSource;
-document.getElementById("copyText").onclick = copyPlain;
+document.getElementById("copyBtn").onclick = copyForWP;
 loadPosts();
 loadMatches();
 </script>
