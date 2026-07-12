@@ -12,45 +12,47 @@
   header{ background:var(--ink); color:#fff; padding:16px 22px; display:flex; align-items:center; gap:12px; border-bottom:3px solid var(--red); }
   header h1{ font-size:17px; margin:0; font-weight:800; letter-spacing:.3px; font-family:Georgia,serif; }
   header .tag{ color:var(--gold); font-size:11px; margin-left:auto; text-transform:uppercase; letter-spacing:.1em; }
-  .wrap{ max-width:1160px; margin:0 auto; padding:20px; display:grid; grid-template-columns:400px 1fr; gap:20px; align-items:start; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:20px; display:grid; grid-template-columns:420px 1fr; gap:20px; align-items:start; }
   @media (max-width:900px){ .wrap{ grid-template-columns:1fr; } }
   .card{ background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px; }
   .card h2{ font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(--muted); margin:0 0 12px; }
-  label{ display:block; font-size:12.5px; font-weight:700; margin:11px 0 4px; }
+  .sub{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:16px 0 2px; font-weight:700; border-top:1px solid var(--line); padding-top:12px; }
+  label{ display:block; font-size:12.5px; font-weight:700; margin:10px 0 4px; }
   input[type=text],select,textarea{ width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:7px; font-size:14px; font-family:inherit; }
-  textarea{ min-height:96px; resize:vertical; }
+  textarea{ min-height:80px; resize:vertical; }
   .row{ display:flex; gap:10px; } .row>div{ flex:1; }
   button{ background:var(--red); color:#fff; border:0; border-radius:7px; padding:10px 15px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; }
   button.secondary{ background:#fff; color:var(--ink); border:1px solid var(--line); }
   .btnrow{ display:flex; gap:9px; margin-top:12px; flex-wrap:wrap; align-items:center; }
-  .articles{ max-height:230px; overflow:auto; border:1px solid var(--line); border-radius:8px; padding:6px; }
+  .articles{ max-height:190px; overflow:auto; border:1px solid var(--line); border-radius:8px; padding:6px; }
   .art{ display:flex; gap:8px; padding:7px; border-radius:6px; align-items:flex-start; } .art:hover{ background:#faf9f7; }
   .art input{ margin-top:3px; } .art .t{ font-size:13px; font-weight:600; } .art .meta{ font-size:11.5px; color:var(--muted); }
   .status{ font-size:12px; color:var(--muted); margin:7px 0 0; } .status.err{ color:var(--red); }
-  .note{ font-size:12px; color:var(--muted); margin-top:8px; background:#faf7f2; border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:6px; padding:9px 11px; }
+  .note{ font-size:12px; color:var(--muted); margin-top:10px; background:#faf7f2; border:1px solid var(--line); border-left:3px solid var(--gold); border-radius:6px; padding:9px 11px; }
   .note b{ color:var(--ink); }
+  .hint{ font-size:11.5px; color:var(--muted); margin-top:4px; font-weight:400; }
   .previewWrap{ background:#eceae4; border:1px solid var(--line); border-radius:10px; padding:14px; }
   .copied{ color:#1a7f37; font-weight:700; font-size:13px; }
-  .hint{ font-size:11.5px; color:var(--muted); margin-top:4px; font-weight:400; }
-  /* Preview approximates how Jetpack will render the blocks */
+  /* Preview approximates Jetpack rendering of the blocks */
   #preview{ background:#fff; padding:22px; border-radius:6px; font-family:Georgia,serif; color:#1a1d21; font-size:15px; line-height:1.6; }
   #preview h2{ font-family:Arial,sans-serif; font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(--red); margin:22px 0 8px; }
   #preview h2:first-child{ margin-top:0; }
   #preview h3{ font-size:19px; margin:6px 0; line-height:1.3; }
   #preview a{ color:var(--ink); text-decoration:none; }
   #preview p a strong{ color:var(--red); }
-  #preview blockquote{ border-left:3px solid var(--red); margin:0; padding:8px 14px; background:#faf7f2; font-style:normal; }
-  #preview img{ max-width:100%; height:auto; border-radius:6px; display:block; margin:6px 0; }
-  #preview figure{ margin:0; }
+  #preview blockquote{ border-left:3px solid var(--red); margin:0; padding:8px 14px; background:#faf7f2; }
+  #preview figure{ margin:0; } #preview img{ max-width:100%; height:auto; border-radius:6px; display:block; margin:6px 0; }
   #preview hr{ border:0; border-top:1px solid var(--line); margin:18px 0; }
   #preview ul{ padding-left:18px; margin:6px 0; } #preview li{ margin:3px 0; font-family:Arial,sans-serif; font-size:14px; }
   #preview p{ margin:8px 0; }
+  #preview .wp-block-group{ font-family:Arial,sans-serif; font-size:14px; }
+  #preview .wp-block-button__link{ display:inline-block; background:#80000a; color:#fff; padding:12px 24px; border-radius:20px; text-decoration:none; font-weight:bold; margin-top:6px; }
 </style>
 </head>
 <body>
 <header>
   <h1>Scarves and Spikes · Newsletter Builder</h1>
-  <span class="tag">pull · write your take · copy · paste</span>
+  <span class="tag">pull · write · copy · paste</span>
 </header>
 
 <div class="wrap">
@@ -64,21 +66,32 @@
     </div>
     <div class="row">
       <div><label>Edition type</label><select id="mode"><option value="regular">Morning</option><option value="matchday">Matchday</option></select></div>
-      <div><label>Include today's matches</label><select id="incMatches"><option value="yes">Yes</option><option value="no">No</option></select></div>
+      <div><label>Include games</label><select id="incMatches"><option value="yes">Yes</option><option value="no">No</option></select></div>
     </div>
 
-    <label>Your take / what to watch <span class="hint">(the part you write, in your voice)</span></label>
-    <textarea id="take" placeholder="A few sentences: the storyline of the day, what to watch, a hot take. This is what makes it worth opening."></textarea>
+    <label>The Take <span class="hint">(your voice, the hook)</span></label>
+    <textarea id="take" placeholder="A few sentences: the storyline of the day, what to watch, a hot take."></textarea>
 
-    <label>Feature these articles <span class="hint">(newest are pre-checked)</span></label>
+    <label>Feature these articles <span class="hint">(newest pre-checked)</span></label>
     <div class="articles" id="articles"><p class="status">Loading your latest posts...</p></div>
+
+    <div class="sub">The Freebie (optional)</div>
+    <div class="row">
+      <div><label>Section title</label><input type="text" id="fTitle" value="The Freebie" /></div>
+    </div>
+    <label>What's in it</label>
+    <textarea id="fBody" placeholder="Anything you want here: a giveaway, the latest show, a poll, a link to something free. Leave blank to skip this section."></textarea>
+    <div class="row">
+      <div><label>Link label (optional)</label><input type="text" id="fLinkLabel" placeholder="Watch the show" /></div>
+      <div><label>Link URL (optional)</label><input type="text" id="fLinkUrl" placeholder="https://..." /></div>
+    </div>
 
     <div class="btnrow">
       <button class="secondary" id="refresh">Refresh</button>
       <button id="generate">Generate &darr;</button>
     </div>
     <p class="status" id="matchStatus"></p>
-    <div class="note"><b>In WordPress:</b> click into the post body and <b>paste</b> (it becomes blocks automatically). Then hit enter and type <b>/Patreon</b> for your Patreon block. Set the post to your <b>Newsletter</b> category and schedule it. Paste into the normal editor, <b>not</b> a Custom HTML block.</div>
+    <div class="note"><b>In WordPress:</b> new post &rarr; Options menu (three dots, top right) &rarr; <b>Code editor</b> &rarr; paste &rarr; Options &rarr; <b>Visual editor</b>. If it warns about unexpected content, click <b>Attempt block recovery</b>. Set the <b>Newsletter</b> category and schedule. The Patreon block is already included.</div>
   </div>
 
   <div class="card">
@@ -88,7 +101,7 @@
       <button id="copyBtn">Copy for WordPress</button>
       <span class="copied" id="copiedMsg" style="display:none;">Copied &check;</span>
     </div>
-    <p class="hint">This is close to how Jetpack will render it. Jetpack adds your site header at the top and applies its own clean styling.</p>
+    <p class="hint">Preview approximates the email. Jetpack adds your site header on top and applies its clean styling.</p>
   </div>
 </div>
 
@@ -96,7 +109,6 @@
 // ============ CONFIG ============
 const SITE = "scarvesandspikes.com";
 const POSTS_API = `https://public-api.wordpress.com/rest/v1.1/sites/${SITE}/posts/?number=12&fields=ID,title,URL,excerpt,date,categories,featured_image`;
-// Edit this list to add/remove leagues. slug = ESPN league slug.
 const LEAGUES = [
   {slug:"fifa.world", name:"FIFA World Cup"},
   {slug:"usa.1",      name:"MLS"},
@@ -109,6 +121,27 @@ const LEAGUES = [
   {slug:"uefa.champions", name:"Champions League"},
   {slug:"uefa.europa",    name:"Europa League"}
 ];
+
+// Patreon block, native Gutenberg markup, full width (layout default). Edit here if the offer changes.
+const PATREON_BLOCK =
+'<!-- wp:group {"style":{"spacing":{"padding":{"top":"20px","right":"20px","bottom":"20px","left":"20px"}},"border":{"color":"#d1d1d1","width":"1px","radius":"10px"},"color":{"background":"#f5f5f5"}},"layout":{"type":"default"}} -->\n'+
+'<div class="wp-block-group has-border-color has-background" style="border-color:#d1d1d1;border-width:1px;border-radius:10px;background-color:#f5f5f5;padding:20px">\n'+
+'<!-- wp:heading {"level":3} --><h3 class="wp-block-heading">Help support independent Atlanta soccer coverage</h3><!-- /wp:heading -->\n'+
+'<!-- wp:paragraph --><p>Every week, Scarves and Spikes brings you original interviews, on-site coverage, live shows and podcasts, and the analysis you won\'t find at the bigger national outlets. With 2026 being a World Cup year, Atlanta United facing yet another important transfer window, the U.S. Soccer National Training Center setting up shop in the Atlanta area, and NWSL Atlanta kicking off in 2028, your support helps us do even more.</p><!-- /wp:paragraph -->\n'+
+'<!-- wp:paragraph --><p>What you get on Patreon:</p><!-- /wp:paragraph -->\n'+
+'<!-- wp:list --><ul class="wp-block-list">\n'+
+'<!-- wp:list-item --><li>Atlanta United training ground updates</li><!-- /wp:list-item -->\n'+
+'<!-- wp:list-item --><li>Exclusive interviews, like our recent sit-down with ATL UTD 2 head coach Jose Silva</li><!-- /wp:list-item -->\n'+
+'<!-- wp:list-item --><li>Discord access, talk Atlanta soccer with the SnS team and other supporters</li><!-- /wp:list-item -->\n'+
+'<!-- wp:list-item --><li>Patreon-only mailbags</li><!-- /wp:list-item -->\n'+
+'<!-- wp:list-item --><li>Grey Gowder\'s analytical deep-dives on roster construction, the academy, ATL UTD 2, and more</li><!-- /wp:list-item -->\n'+
+'</ul><!-- /wp:list -->\n'+
+'<!-- wp:paragraph --><p><strong>Membership starts at $5/month. New subscribers get a 7-day free trial.</strong></p><!-- /wp:paragraph -->\n'+
+'<!-- wp:buttons --><div class="wp-block-buttons"><!-- wp:button {"style":{"color":{"background":"#80000a","text":"#ffffff"},"border":{"radius":"20px"}}} -->\n'+
+'<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background wp-element-button" style="color:#ffffff;border-radius:20px;background-color:#80000a" href="https://patreon.com/scarvesandspikes/" target="_blank" rel="noreferrer noopener">Start your free trial</a></div>\n'+
+'<!-- /wp:button --></div><!-- /wp:buttons -->\n'+
+'</div>\n<!-- /wp:group -->\n';
+
 let POSTS = [], MATCHES = [];
 
 // ============ HELPERS ============
@@ -118,6 +151,13 @@ const shorten = (t,n)=>{ t=(t||"").replace(/\s+/g," ").trim(); return t.length>n
 const todayET = ()=> new Intl.DateTimeFormat("en-CA",{timeZone:"America/New_York",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date());
 const prettyDate = ()=> new Date().toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric",timeZone:"America/New_York"});
 const timeET = iso => new Date(iso).toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"}) + " ET";
+
+// block builders
+const H2 = t => '<!-- wp:heading --><h2 class="wp-block-heading">'+esc(t)+'</h2><!-- /wp:heading -->\n';
+const H3link = (t,u) => '<!-- wp:heading {"level":3} --><h3 class="wp-block-heading"><a href="'+esc(u)+'">'+esc(t)+'</a></h3><!-- /wp:heading -->\n';
+const P = html => '<!-- wp:paragraph --><p>'+html+'</p><!-- /wp:paragraph -->\n';
+const SEP = '<!-- wp:separator --><hr class="wp-block-separator has-alpha-channel-opacity"/><!-- /wp:separator -->\n';
+const IMG = u => '<!-- wp:image --><figure class="wp-block-image size-large"><img src="'+esc(u)+'" alt=""/></figure><!-- /wp:image -->\n';
 
 // ============ POSTS ============
 async function loadPosts(){
@@ -155,7 +195,7 @@ function renderArticles(){
   });
 }
 
-// ============ MATCHES (ESPN) ============
+// ============ MATCHES ============
 async function loadMatches(){
   const st=document.getElementById("matchStatus"); st.textContent="Checking today's fixtures...";
   const d=todayET().replaceAll("-","");
@@ -177,75 +217,80 @@ async function loadMatches(){
     return {name:lg.name, events:evs};
   }));
   MATCHES=results.filter(r=>r.status==="fulfilled" && r.value.events.length).map(r=>r.value);
-  st.textContent = MATCHES.length ? ("Found matches in "+MATCHES.length+" league(s) today.") : "No matches in your league list today (section stays blank).";
+  st.textContent = MATCHES.length ? ("Found matches in "+MATCHES.length+" league(s) today.") : "No matches today (games section stays blank).";
 }
 
-// ============ BUILD NEWSLETTER (native-block HTML, no em dashes) ============
+// ============ BUILD (Gutenberg block markup) ============
 function selectedPosts(){ return [...document.querySelectorAll('#articles input:checked')].map(c=>POSTS[+c.dataset.i]).filter(Boolean); }
 
-function buildBlocksHtml(){
+function buildBlocks(){
   const take=document.getElementById("take").value.trim();
   const author=document.getElementById("author").value;
   const incM=document.getElementById("incMatches").value==="yes";
-  const picks=selectedPosts();
-  const lead=picks[0], rest=picks.slice(1);
-  let h="";
+  const fTitle=document.getElementById("fTitle").value.trim()||"The Freebie";
+  const fBody=document.getElementById("fBody").value.trim();
+  const fLabel=document.getElementById("fLinkLabel").value.trim();
+  const fUrl=document.getElementById("fLinkUrl").value.trim();
+  const picks=selectedPosts(); const lead=picks[0], rest=picks.slice(1);
+  let b="";
 
   if(take){
-    h += "<h2>The Take</h2>\n<blockquote><p>"+esc(take).replace(/\n/g,"<br>")+"</p></blockquote>\n<hr>\n";
+    b += H2("The Take");
+    b += '<!-- wp:quote --><blockquote class="wp-block-quote">'+P(esc(take).replace(/\n/g,"<br>"))+'</blockquote><!-- /wp:quote -->\n';
+    b += SEP;
   }
   if(lead){
-    h += "<h2>Top story</h2>\n";
-    if(lead.img) h += '<figure><img src="'+esc(lead.img)+'" alt=""></figure>\n';
-    h += '<h3><a href="'+esc(lead.url)+'">'+esc(lead.title)+"</a></h3>\n";
-    if(lead.excerpt) h += "<p>"+esc(lead.excerpt)+"</p>\n";
-    h += '<p><a href="'+esc(lead.url)+'"><strong>Read the full story &rarr;</strong></a></p>\n<hr>\n';
+    b += H2("Top Story");
+    if(lead.img) b += IMG(lead.img);
+    b += H3link(lead.title, lead.url);
+    if(lead.excerpt) b += P(esc(lead.excerpt));
+    b += P('<a href="'+esc(lead.url)+'"><strong>Read the full story &rarr;</strong></a>');
+    b += SEP;
   }
   if(rest.length){
-    h += "<h2>Also today</h2>\n";
+    b += H2("Also Today");
     rest.forEach(p=>{
-      h += '<p><a href="'+esc(p.url)+'"><strong>'+esc(p.title)+"</strong></a>";
-      if(p.excerpt) h += "<br>"+esc(shorten(p.excerpt,110));
-      h += "</p>\n";
+      let line='<a href="'+esc(p.url)+'"><strong>'+esc(p.title)+'</strong></a>';
+      if(p.excerpt) line += '<br>'+esc(shorten(p.excerpt,110));
+      b += P(line);
     });
-    h += "<hr>\n";
+    b += SEP;
   }
   if(incM && MATCHES.length){
-    h += "<h2>Today's matches</h2>\n";
+    b += H2("Games to Watch");
     MATCHES.forEach(lg=>{
-      h += "<p><strong>"+esc(lg.name)+"</strong></p>\n<ul>\n";
+      b += P('<strong>'+esc(lg.name)+'</strong>');
+      b += '<!-- wp:list --><ul class="wp-block-list">\n';
       lg.events.forEach(m=>{
         let line;
         if(m.state==="pre") line = esc(m.home)+" v "+esc(m.away)+", "+esc(m.time);
-        else if(m.hs!=null && m.as!=null) line = esc(m.home)+" "+esc(String(m.hs))+"-"+esc(String(m.as))+" "+esc(m.away)+" ("+esc(m.detail)+")";
+        else if(m.hs!=null&&m.as!=null) line = esc(m.home)+" "+esc(String(m.hs))+"-"+esc(String(m.as))+" "+esc(m.away)+" ("+esc(m.detail)+")";
         else line = esc(m.home)+" v "+esc(m.away)+" ("+esc(m.detail)+")";
-        h += "<li>"+line+"</li>\n";
+        b += '<!-- wp:list-item --><li>'+line+'</li><!-- /wp:list-item -->\n';
       });
-      h += "</ul>\n";
+      b += '</ul><!-- /wp:list -->\n';
     });
-    h += "<hr>\n";
+    b += SEP;
   }
-  h += "<p>That's your rundown for today. Written by "+esc(author)+" for Scarves and Spikes, independent Atlanta soccer coverage.</p>\n";
-  return h;
+  if(fBody){
+    b += H2(fTitle);
+    b += P(esc(fBody).replace(/\n/g,"<br>"));
+    if(fLabel && fUrl) b += P('<a href="'+esc(fUrl)+'"><strong>'+esc(fLabel)+' &rarr;</strong></a>');
+    b += SEP;
+  }
+  b += PATREON_BLOCK;
+  b += SEP;
+  b += P("That's your rundown for today, written by "+esc(author)+". See you at the next one.");
+  return b;
 }
 
-function render(){ document.getElementById("preview").innerHTML = buildBlocksHtml(); }
+function render(){ document.getElementById("preview").innerHTML = buildBlocks(); }
 
-// ============ COPY (rich, so it pastes as blocks) ============
+// ============ COPY ============
 function flash(){ const m=document.getElementById("copiedMsg"); m.style.display="inline"; setTimeout(()=>m.style.display="none",1800); }
-async function copyForWP(){
-  const html=buildBlocksHtml();
-  const plain=document.getElementById("preview").innerText;
-  try{
-    await navigator.clipboard.write([ new ClipboardItem({
-      "text/html": new Blob([html],{type:"text/html"}),
-      "text/plain": new Blob([plain],{type:"text/plain"})
-    })]);
-    flash();
-  }catch(e){
-    try{ await navigator.clipboard.writeText(html); flash(); }
-    catch(e2){ const ta=document.createElement("textarea"); ta.value=html; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); flash(); }
-  }
+function copyForWP(){
+  const code=buildBlocks();
+  navigator.clipboard.writeText(code).then(flash,()=>{ const ta=document.createElement("textarea"); ta.value=code; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); ta.remove(); flash(); });
 }
 
 // ============ INIT ============
